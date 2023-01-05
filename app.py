@@ -74,6 +74,42 @@ def post_video():
         print(e)
 
 
+@app.route('/all_videos_path')
+def get_all_videos_path():
+    return db.get_all_videos_path()
+
+
+@app.route('/video_path/<video_id>')
+def get_video_path(video_id):
+    return db.get_video_path(video_id)
+
+
+@app.route('/all_frames_path/<video_id>')
+def get_all_frames_path(video_id):
+    return db.get_all_frames_path(video_id)
+
+
+@app.route('/frame_path/<video_id>/<frame_index>')
+def get_frame_path(video_id, frame_index):
+    return db.get_frame_path(video_id, frame_index)
+
+
+@app.route('/download_video/<video_id>')
+def download_video(video_id):
+    key = f'{db.get_video_key(video_id)}.mp4'
+    s3.download_file(key, 'sapir-videos')
+    return 'download video'
+
+
+@app.route('/download_tagged_frames/<video_id>')
+def download_tagged_frames(video_id):
+    frames = db.get_tagged_frames(video_id)
+    for frame in frames:
+        key = f'{frame.index}.jpg'
+        s3.download_file(key, 'sapir-images')
+    return 'download tagged frames'
+
+
 def main():
     with app.app_context():
         db.create_all()

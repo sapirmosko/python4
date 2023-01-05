@@ -18,8 +18,10 @@ class S3Manager:
     def upload_file(self, path, bucket_name, key):
         self.s3.upload_file(path, bucket_name, key)
 
-    def download_file(self, key, bucket_name, file_path):
-        self.s3.download_file(bucket_name, key, file_path)
+    def download_file(self, key, bucket_name):
+        local_file_path = os.path.join(
+            os.path.expanduser('~'), 'Downloads', key)
+        self.s3.download_file(bucket_name, key, local_file_path)
 
     def list_files(self, bucket_name):
         response = self.s3.list_objects(Bucket=bucket_name)
